@@ -54,3 +54,4 @@ class DialogState(BaseModel):
     profile: LeadProfile = Field(default_factory=LeadProfile)
     is_completed: bool = False
     turn_count: int = 0
+

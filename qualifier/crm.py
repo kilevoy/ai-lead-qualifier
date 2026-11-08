@@ -131,3 +131,4 @@ class AmoCRMClient:
                 "task": f"Связаться в течение 15 минут ({profile.next_step})",
             },
         }
+

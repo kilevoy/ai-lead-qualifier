@@ -96,3 +96,4 @@ async def push_to_crm_endpoint(req: PushRequest):
 web_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "web")
 if os.path.exists(web_dir):
     app.mount("/", StaticFiles(directory=web_dir, html=True), name="static")
+
