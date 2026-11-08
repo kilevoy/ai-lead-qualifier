@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Lead Qualifier & CRM Automation · Демо</title>
+  <title>AI Lead Qualifier · Квалификация по проектам (Ангары, Фасады, Газобетон)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -20,6 +20,8 @@
       --warm: #f59e0b;
       --cold: #06b6d4;
       --success: #10b981;
+      --project-bg: #1e1b4b;
+      --project-border: #4338ca;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -43,19 +45,13 @@
     }
     .brand { display: flex; align-items: center; gap: 0.75rem; }
     .brand-logo {
-      width: 34px; height: 34px; border-radius: 8px;
+      width: 36px; height: 36px; border-radius: 8px;
       background: linear-gradient(135deg, #2563eb, #7c3aed);
       display: flex; align-items: center; justify-content: center;
       font-weight: 700; font-size: 1.1rem;
     }
     .brand-title { font-size: 1.05rem; font-weight: 600; }
     .brand-sub { font-size: 0.8rem; color: var(--text-muted); }
-    .header-links a {
-      color: var(--text-muted); text-decoration: none; font-size: 0.85rem;
-      padding: 0.4rem 0.8rem; border-radius: 6px; border: 1px solid var(--card-border);
-      transition: all 0.2s;
-    }
-    .header-links a:hover { color: #fff; border-color: var(--accent); }
 
     .container {
       display: grid;
@@ -89,16 +85,18 @@
       align-items: center;
     }
     .panel-title { font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
+
     .presets {
       padding: 0.75rem 1.25rem;
       background: rgba(15, 23, 42, 0.6);
       border-bottom: 1px solid var(--card-border);
       display: flex; gap: 0.5rem; flex-wrap: wrap;
     }
+    .preset-label { font-size: 0.75rem; color: var(--text-muted); align-self: center; font-weight: 600; }
     .preset-btn {
       background: #1e293b; color: #cbd5e1; border: 1px solid #334155;
-      padding: 0.35rem 0.7rem; border-radius: 6px; font-size: 0.78rem;
-      cursor: pointer; transition: all 0.15s;
+      padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.78rem;
+      cursor: pointer; transition: all 0.15s; font-weight: 500;
     }
     .preset-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
 
@@ -130,6 +128,7 @@
       background: linear-gradient(135deg, #1d4ed8, #2563eb);
       color: #ffffff;
     }
+
     .chat-input-bar {
       padding: 1rem;
       border-top: 1px solid var(--card-border);
@@ -150,24 +149,39 @@
     }
     .chat-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
     .send-btn {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      padding: 0 1.25rem;
-      border-radius: 8px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s;
+      background: var(--accent); color: #fff; border: none;
+      padding: 0 1.25rem; border-radius: 8px; font-weight: 500;
+      cursor: pointer; transition: background 0.2s;
     }
     .send-btn:hover { background: #1d4ed8; }
 
-    /* DASHBOARD / CRM PANEL */
+    /* DASHBOARD PANEL */
     .dashboard-panel {
       display: flex;
       flex-direction: column;
       gap: 1.25rem;
     }
 
+    /* PROJECT BANNER */
+    .project-banner {
+      background: var(--project-bg);
+      border: 1px solid var(--project-border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .project-title-label { font-size: 0.75rem; color: #a5b4fc; text-transform: uppercase; font-weight: 600; margin-bottom: 0.25rem; }
+    .project-badge {
+      font-size: 1.05rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 0.5rem;
+    }
+    .routing-tag {
+      font-size: 0.75rem; background: rgba(99, 102, 241, 0.25); color: #c7d2fe;
+      padding: 0.3rem 0.65rem; border-radius: 6px; border: 1px solid rgba(99, 102, 241, 0.4);
+    }
+
+    /* SCORE CARD */
     .score-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -177,22 +191,18 @@
       align-items: center;
       justify-content: space-between;
     }
-    .score-gauge {
-      display: flex;
-      align-items: center;
-      gap: 1.25rem;
-    }
+    .score-gauge { display: flex; align-items: center; gap: 1.25rem; }
     .score-circle {
-      width: 64px; height: 64px; border-radius: 50%;
+      width: 60px; height: 60px; border-radius: 50%;
       background: #1e293b; border: 3px solid var(--warm);
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.3rem; font-weight: 700; font-family: 'JetBrains Mono', monospace;
+      font-size: 1.25rem; font-weight: 700; font-family: 'JetBrains Mono', monospace;
       transition: all 0.3s ease;
     }
-    .score-info h4 { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.25rem; }
+    .score-info h4 { font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.25rem; }
     .status-badge {
-      display: inline-block; padding: 0.25rem 0.6rem; border-radius: 9999px;
-      font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+      display: inline-block; padding: 0.2rem 0.55rem; border-radius: 9999px;
+      font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
       background: rgba(245, 158, 11, 0.15); color: var(--warm);
     }
 
@@ -228,7 +238,7 @@
     }
     .crm-title { font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
     .crm-tag {
-      font-size: 0.72rem; background: #0284c7; color: #fff; padding: 0.2rem 0.5rem; border-radius: 4px;
+      font-size: 0.72rem; background: #0284c7; color: #fff; padding: 0.25rem 0.6rem; border-radius: 4px; font-weight: 500;
     }
     .crm-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.85rem; }
     .crm-row span:first-child { color: var(--text-muted); }
@@ -286,69 +296,84 @@
     <div class="brand">
       <div class="brand-logo">⚡</div>
       <div>
-        <div class="brand-title">AI Lead Qualifier & CRM Automation</div>
-        <div class="brand-sub">Квалификация B2B-лидов по BANT и автосоздание сделок в amoCRM</div>
+        <div class="brand-title">AI Lead Qualifier & Pipeline Router</div>
+        <div class="brand-sub">Автоопределение направления продаж («Проекта») · BANT · Маршрутизация в amoCRM</div>
       </div>
     </div>
-    <div class="header-links">
-      <a href="https://github.com/kilevoy/ai-lead-qualifier" target="_blank">Исходный код на GitHub</a>
+    <div style="font-size: 0.8rem; color: #a5b4fc; background: #1e1b4b; padding: 0.35rem 0.85rem; border-radius: 6px; border: 1px solid #4338ca;">
+      🏛 Направления: Ангары / Фасады и Кровли / Газобетон
     </div>
   </header>
 
   <div class="container">
-    <!-- LEFT: CHAT INTERFACE -->
+    <!-- LEFT: CHAT -->
     <div class="panel">
       <div class="panel-header">
         <div class="panel-title">💬 Диалоговый AI-квалификатор</div>
-        <span style="font-size: 0.75rem; color: #10b981;">● Online (BANT Mode)</span>
+        <span style="font-size: 0.75rem; color: #10b981;">● Online (Проектный BANT)</span>
       </div>
+
       <div class="presets">
-        <span style="font-size: 0.75rem; color: var(--text-muted); align-self: center;">Быстрый тест:</span>
-        <button class="preset-btn" onclick="sendPreset(1)">🏗 Склад ЛСТК 1200м²</button>
-        <button class="preset-btn" onclick="sendPreset(2)">⚙️ Ремонт турбокомпрессора</button>
-        <button class="preset-btn" onclick="sendPreset(3)">💧 Очистные сооружения (ЛОС)</button>
+        <span class="preset-label">Тестовые проекты:</span>
+        <button class="preset-btn" onclick="sendPreset(1)">🏭 Проект «Ангары» (ЛСТК 1200м²)</button>
+        <button class="preset-btn" onclick="sendPreset(2)">🏢 Проект «Кровли и Фасады» (КФ-1 2400м²)</button>
+        <button class="preset-btn" onclick="sendPreset(3)">🧱 Проект «Газобетон» (D500 180м³)</button>
       </div>
+
       <div class="chat-messages" id="chatBox">
         <div class="message assistant">
-          Здравствуйте! Я виртуальный инженер отдела продаж. Расскажите, пожалуйста, какой объект или задачу вы планируете реализовать?
+          Здравствуйте! Я виртуальный инженер отдела продаж. Подскажите, какая продукция вас интересует: быстровозводимые ангары, фасадные системы/кровля или автоклавный газобетон?
         </div>
       </div>
+
       <div class="chat-input-bar">
-        <input type="text" id="userInput" class="chat-input" placeholder="Напишите вашу задачу или параметры объекта..." onkeydown="if(event.key==='Enter') sendMessage()">
+        <input type="text" id="userInput" class="chat-input" placeholder="Напишите продукцию, объём или объект..." onkeydown="if(event.key==='Enter') sendMessage()">
         <button class="send-btn" onclick="sendMessage()">Отправить</button>
       </div>
     </div>
 
-    <!-- RIGHT: DASHBOARD & CRM PREVIEW -->
+    <!-- RIGHT: DASHBOARD & CRM -->
     <div class="dashboard-panel">
-      <!-- BANT SCORING -->
+
+      <!-- PROJECT DIRECTION BANNER -->
+      <div class="project-banner">
+        <div>
+          <div class="project-title-label">Выявленное направление продаж (Проект)</div>
+          <div class="project-badge" id="projectBadge">
+            <span>❓</span> <span>Направление уточняется</span>
+          </div>
+        </div>
+        <div class="routing-tag" id="routingTag">Целевая воронка CRM: Общая</div>
+      </div>
+
+      <!-- SCORE & BANT -->
       <div class="score-card">
         <div class="score-gauge">
-          <div class="score-circle" id="scoreCircle">30</div>
+          <div class="score-circle" id="scoreCircle">25</div>
           <div class="score-info">
             <h4>BANT Скоринг</h4>
             <div class="status-badge" id="statusBadge">COLD LEAD</div>
           </div>
         </div>
         <div style="text-align: right; font-size: 0.8rem; color: var(--text-muted);">
-          Алгоритм: <span style="color: #fff;">BANT + Скоринг ЛПР</span><br>
-          Скорость обработки: <span style="color: #10b981;">&lt; 1 сек</span>
+          Автомаршрутизация: <span style="color: #34d399;">Активна</span><br>
+          Время квалификации: <span style="color: #60a5fa;">&lt; 15 сек</span>
         </div>
       </div>
 
-      <!-- BANT CRITERIA -->
+      <!-- BANT GRID -->
       <div class="bant-grid">
         <div class="bant-item">
-          <div class="bant-label">🎯 Потребность (Need)</div>
+          <div class="bant-label">🎯 Потребность (Need) & Параметры</div>
           <div class="bant-value" id="valNeed">Уточняется</div>
         </div>
         <div class="bant-item">
-          <div class="bant-label">⏱ Сроки (Timeline)</div>
+          <div class="bant-label">⏱ Сроки реализации (Timeline)</div>
           <div class="bant-value" id="valTimeline">Не указаны</div>
         </div>
         <div class="bant-item">
           <div class="bant-label">💰 Бюджет (Budget)</div>
-          <div class="bant-value" id="valBudget">Не обсуждался</div>
+          <div class="bant-value" id="valBudget">По расчёту</div>
         </div>
         <div class="bant-item">
           <div class="bant-label">👑 Роль ЛПР (Authority)</div>
@@ -356,11 +381,11 @@
         </div>
       </div>
 
-      <!-- CRM DEAL PREVIEW -->
+      <!-- CRM CARD -->
       <div class="crm-card">
         <div class="crm-header">
-          <div class="crm-title">📋 Карточка сделки в amoCRM (Предпросмотр)</div>
-          <div class="crm-tag" id="dealPipeline">Воронка: Промышленные продажи</div>
+          <div class="crm-title">📋 Карточка сделки в целевой воронке amoCRM</div>
+          <div class="crm-tag" id="dealPipelineTag">Воронка: Общие лиды</div>
         </div>
         <div class="crm-row">
           <span>Название сделки:</span>
@@ -368,7 +393,7 @@
         </div>
         <div class="crm-row">
           <span>Бюджет сделки:</span>
-          <span id="dealPrice">0 ₽</span>
+          <span id="dealPrice">По расчёту</span>
         </div>
         <div class="crm-row">
           <span>Контактное лицо:</span>
@@ -379,45 +404,48 @@
           <span id="dealPhone">—</span>
         </div>
         <div class="task-badge" id="dealTask">
-          ⏱ <b>Задача менеджеру:</b> Связаться в течение 15 минут для уточнения ТЗ
+          ⏱ <b>Задача:</b> Назначить инженера проекта для предварительного расчёта ТЗ
         </div>
       </div>
 
       <!-- TELEGRAM PREVIEW -->
       <div class="crm-card" style="padding: 1rem;">
         <div class="crm-title" style="margin-bottom: 0.6rem; font-size: 0.85rem;">
-          ✈️ Превью алерта в Telegram РОПа:
+          ✈️ Превью алерта в Telegram РОПа и руководителя проекта:
         </div>
-        <div class="tg-preview" id="tgPreview">Ожидание данных диалога...</div>
+        <div class="tg-preview" id="tgPreview">Ожидание данных...</div>
       </div>
 
       <button class="action-btn" onclick="pushToCrm()">
-        🚀 Передать сделку в amoCRM и отправить алерт в Telegram
+        🚀 Передать сделку в проектную воронку и уведомить команду
       </button>
+
     </div>
   </div>
 
   <script>
     let state = {
-      turn: 0,
+      project: "Направление уточняется",
+      projectIcon: "❓",
+      pipeline: "Воронка: Общие входящие лиды",
       need: "Уточняется",
       timeline: "Не указаны",
-      budget: "Не обсуждался",
+      budget: "По расчёту",
       budgetAmount: 0,
       authority: "Представитель",
       contact: "Контакт не представился",
       phone: null,
-      score: 30,
+      score: 25,
       status: "COLD"
     };
 
     function sendPreset(num) {
       if (num === 1) {
-        processUserMsg("Добрый день! Требуется склад из ЛСТК 1200 кв.м в Челябинске. Сроки горят, надо смонтировать за месяц. Бюджет 5.5 млн руб. Я директор компании ООО УралСтрой, Игорь, тел: +7 (919) 343-48-71");
+        processUserMsg("Добрый день! Нам нужен быстровозводимый склад из металлокаркаса ЛСТК на 1200 кв.м, высота в коньке 6м. Тёплый контур. Сроки горят, за месяц смонтировать. Бюджет 6.5 млн руб. Я генеральный директор ООО ПромИнвест, Игорь, тел: +7 (919) 343-48-71");
       } else if (num === 2) {
-        processUserMsg("Здравствуйте! Нужен капитальный ремонт центробежного компрессора на заводе. Срок до конца квартала. Закупка по тендеру, ориентир 8 млн руб. Главный механик завода, Сергей, почта: mehanik@plant.ru");
+        processUserMsg("Здравствуйте! Требуется навесной вентфасад из фасадных кассет КФ-1 с подконструкцией, площадь фасада 2400 м2. Монтаж весной. Прораб Сергей, компания Монолит, тел: +7 (912) 800-11-22");
       } else if (num === 3) {
-        processUserMsg("Нужен расчет промышленного септика на 50 человек для турбазы. Монтаж весной. Телефон для КП: +7 (912) 800-20-30, Алексей");
+        processUserMsg("Нужен автоклавный газобетон D500 толщиной 400мм, объем 180 куб для коттеджного поселка с доставкой длинномерами. Закупка в течение 2 недель. Снабженец Алексей, телефон: +7 (902) 600-30-40");
       }
     }
 
@@ -430,29 +458,35 @@
     }
 
     function processUserMsg(text) {
-      state.turn++;
       appendMsg(text, "user");
-
-      // Анализ сущностей прямо в клиенте для автономного демо на GitHub Pages
       const lower = text.toLowerCase();
-      
-      // Need
-      if (lower.includes("лстк") || lower.includes("склад") || lower.includes("каркас")) {
-        state.need = "Быстровозводимый склад из ЛСТК 1200 м²";
-      } else if (lower.includes("компрессор") || lower.includes("турбин") || lower.includes("ремонт")) {
-        state.need = "Капремонт промышленного компрессора";
-      } else if (lower.includes("септик") || lower.includes("очистн")) {
-        state.need = "Локальное очистное сооружение на 50 чел.";
+
+      // 1. Определение направления (Проекта)
+      if (lower.includes("ангар") || lower.includes("склад") || lower.includes("каркас") || lower.includes("лстк")) {
+        state.project = "Проект: Ангары и Здания";
+        state.projectIcon = "🏭";
+        state.pipeline = "Воронка: Проект «Ангары и Здания»";
+        state.need = "Быстровозводимый склад из ЛСТК 1200 м² (тёплый контур)";
+      } else if (lower.includes("фасад") || lower.includes("кассет") || lower.includes("кф") || lower.includes("кровл")) {
+        state.project = "Проект: Кровли и Фасады";
+        state.projectIcon = "🏢";
+        state.pipeline = "Воронка: Проект «Кровли и Фасады»";
+        state.need = "Навесной вентфасад из кассет КФ-1 (2400 м²)";
+      } else if (lower.includes("газобетон") || lower.includes("блок") || lower.includes("куб") || lower.includes("d500")) {
+        state.project = "Проект: Газобетон";
+        state.projectIcon = "🧱";
+        state.pipeline = "Воронка: Проект «Газобетон»";
+        state.need = "Автоклавный газобетон D500 400мм (180 м³)";
       }
 
-      // Timeline
-      if (lower.includes("месяц") || lower.includes("горят") || lower.includes("срочно")) {
+      // 2. Timeline
+      if (lower.includes("месяц") || lower.includes("горят") || lower.includes("срочно") || lower.includes("недел")) {
         state.timeline = "Срочно (до 30 дней)";
-      } else if (lower.includes("квартал") || lower.includes("весна")) {
+      } else if (lower.includes("весна") || lower.includes("квартал")) {
         state.timeline = "Плановый срок (1-3 месяца)";
       }
 
-      // Budget
+      // 3. Budget
       const amtMatch = text.match(/(\d+([.,]\d+)?)\s*(млн|тыс|руб)/i);
       if (amtMatch) {
         const val = parseFloat(amtMatch[1].replace(",", "."));
@@ -460,45 +494,39 @@
         state.budgetAmount = val * (amtMatch[3].toLowerCase() === "млн" ? 1000000 : 1000);
       }
 
-      // Authority
+      // 4. Authority
       if (lower.includes("директор") || lower.includes("гендир") || lower.includes("руководитель")) {
         state.authority = "Генеральный директор (ЛПР)";
-      } else if (lower.includes("механик") || lower.includes("инженер")) {
-        state.authority = "Главный специалист / Механик";
+      } else if (lower.includes("снабжен") || lower.includes("закуп")) {
+        state.authority = "Служба снабжения";
+      } else if (lower.includes("прораб") || lower.includes("инженер")) {
+        state.authority = "Технический специалист / Прораб";
       }
 
-      // Contacts
+      // 5. Contacts
       const phoneMatch = text.match(/(\+7|8)[\s\-]?\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}/);
       if (phoneMatch) state.phone = phoneMatch[0];
 
-      const emailMatch = text.match(/[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/);
-      if (emailMatch) state.email = emailMatch[0];
-
-      if (lower.includes("игорь")) state.contact = "Игорь (ООО УралСтрой)";
-      else if (lower.includes("сергей")) state.contact = "Сергей (Завод)";
-      else if (lower.includes("алексей")) state.contact = "Алексей";
+      if (lower.includes("игорь")) state.contact = "Игорь (ООО ПромИнвест)";
+      else if (lower.includes("сергей")) state.contact = "Сергей (Монолит)";
+      else if (lower.includes("алексей")) state.contact = "Алексей (Снабжение)";
 
       // Score
-      let score = 30;
-      if (state.need !== "Уточняется") score += 25;
-      if (state.phone || state.email) score += 25;
+      let score = 25;
+      if (state.project !== "Направление уточняется") score += 25;
+      if (state.phone) score += 25;
       if (state.budgetAmount > 0) score += 15;
       if (state.authority.includes("ЛПР")) score += 10;
       state.score = Math.min(score, 100);
 
-      if (state.score >= 75) state.status = "HOT";
-      else if (state.score >= 45) state.status = "WARM";
-      else state.status = "COLD";
+      state.status = state.score >= 75 ? "HOT" : (state.score >= 45 ? "WARM" : "COLD");
 
-      // AI Response
       setTimeout(() => {
         let reply = "";
-        if (state.phone || state.email) {
-          reply = `Отлично, ${state.contact}! Данные приняты. Зафиксировал задачу: "${state.need}". Предварительный расчет с учетом бюджета ${state.budget} будет подготовлен и отправлен вам в течение 15 минут.`;
-        } else if (state.turn === 1) {
-          reply = "Принято! Подскажите ориентировочные сроки реализации, и есть ли уже готовый проект или техническое задание?";
+        if (state.phone) {
+          reply = `Отлично, ${state.contact}! Запрос передан в «${state.project}». Зафиксировал параметры: ${state.need}. Ведущий инженер проекта подготовит технико-коммерческое предложение и свяжется с вами в течение 15 минут.`;
         } else {
-          reply = "Для подготовки точного КП и согласования условий, укажите, пожалуйста, контактный номер телефона или Telegram.";
+          reply = `Принято! Зафиксировал интерес по направлению «${state.project}». Уточните, пожалуйста, контактный номер телефона для передачи проектной группе.`;
         }
         appendMsg(reply, "assistant");
         updateDashboard();
@@ -515,29 +543,27 @@
     }
 
     function updateDashboard() {
+      // Project Banner
+      document.getElementById("projectBadge").innerHTML = `<span>${state.projectIcon}</span> <span>${state.project}</span>`;
+      document.getElementById("routingTag").innerText = `Целевая воронка: ${state.pipeline}`;
+
       // Score
       const circle = document.getElementById("scoreCircle");
       const badge = document.getElementById("statusBadge");
       circle.innerText = state.score;
 
       if (state.status === "HOT") {
-        circle.style.borderColor = "var(--hot)";
-        circle.style.color = "var(--hot)";
+        circle.style.borderColor = "var(--hot)"; circle.style.color = "var(--hot)";
         badge.innerText = "🔥 HOT LEAD (75+)";
-        badge.style.background = "rgba(239, 68, 68, 0.15)";
-        badge.style.color = "var(--hot)";
+        badge.style.background = "rgba(239, 68, 68, 0.15)"; badge.style.color = "var(--hot)";
       } else if (state.status === "WARM") {
-        circle.style.borderColor = "var(--warm)";
-        circle.style.color = "var(--warm)";
+        circle.style.borderColor = "var(--warm)"; circle.style.color = "var(--warm)";
         badge.innerText = "⚡️ WARM LEAD";
-        badge.style.background = "rgba(245, 158, 11, 0.15)";
-        badge.style.color = "var(--warm)";
+        badge.style.background = "rgba(245, 158, 11, 0.15)"; badge.style.color = "var(--warm)";
       } else {
-        circle.style.borderColor = "var(--cold)";
-        circle.style.color = "var(--cold)";
+        circle.style.borderColor = "var(--cold)"; circle.style.color = "var(--cold)";
         badge.innerText = "❄️ COLD LEAD";
-        badge.style.background = "rgba(6, 182, 212, 0.15)";
-        badge.style.color = "var(--cold)";
+        badge.style.background = "rgba(6, 182, 212, 0.15)"; badge.style.color = "var(--cold)";
       }
 
       // BANT
@@ -547,13 +573,15 @@
       document.getElementById("valAuthority").innerText = state.authority;
 
       // CRM
-      document.getElementById("dealName").innerText = `${state.need} — ${state.contact}`;
-      document.getElementById("dealPrice").innerText = state.budgetAmount ? `${state.budgetAmount.toLocaleString('ru-RU')} ₽` : "По расчету";
+      document.getElementById("dealPipelineTag").innerText = state.pipeline;
+      document.getElementById("dealName").innerText = `[${state.project.replace('Проект: ', '')}] ${state.need}`;
+      document.getElementById("dealPrice").innerText = state.budgetAmount ? `${state.budgetAmount.toLocaleString('ru-RU')} ₽` : "По спецификации";
       document.getElementById("dealContact").innerText = state.contact;
-      document.getElementById("dealPhone").innerText = state.phone || state.email || "Уточняется в чате";
+      document.getElementById("dealPhone").innerText = state.phone || "Уточняется";
+      document.getElementById("dealTask").innerHTML = `⏱ <b>Задача инженеру «${state.project}»:</b> Расчёт ТЗ и сметы в течение 15 минут`;
 
       // TG Preview
-      const tgText = `🔥 НОВЫЙ КВАЛИФИЦИРОВАННЫЙ ЛИД (${state.score}/100 [${state.status}])
+      const tgText = `🔥 НОВЫЙ ЛИД | ${state.projectIcon} ${state.project.toUpperCase()}
 ━━━━━━━━━━━━━━━━━━
 👤 Клиент: ${state.contact}
 📞 Телефон: ${state.phone || 'не указан'}
@@ -561,18 +589,18 @@
 ⏱ Сроки: ${state.timeline}
 💰 Бюджет: ${state.budget}
 👑 ЛПР: ${state.authority}
-👉 Задача: Связаться в течение 15 минут
+📊 Скоринг: ${state.score}/100 [${state.status}]
+👉 Маршрутизация: Передано в ${state.pipeline}
 🔗 amoCRM: https://demo.amocrm.ru/leads/detail/98745210`;
 
       document.getElementById("tgPreview").innerText = tgText;
     }
 
     function pushToCrm() {
-      alert(`✅ Успешно!\n\n1. Сделка создана в amoCRM (#98745210)\n2. Контакт привязан: ${state.contact}\n3. Алерт мгновенно доставлен в Telegram РОПа\n4. Поставлена задача с таймером 15 мин.`);
+      alert(`✅ Успешно!\n\n1. Направление: ${state.project}\n2. Сделка создана в ${state.pipeline} (#98745210)\n3. Назначен ведущий инженер проектной группы\n4. Алерт доставлен руководителю направления в Telegram`);
     }
 
     updateDashboard();
   </script>
 </body>
 </html>
-

@@ -1,17 +1,25 @@
-"""Telegram notification builder and dispatcher for qualified leads."""
+"""Telegram notification builder with project direction tagging."""
 
 import os
 import logging
 from typing import Dict, Any, Optional
 import httpx
 
-from qualifier.models import LeadProfile, LeadStatus
+from qualifier.models import LeadProfile, LeadStatus, SalesProject
 
 logger = logging.getLogger(__name__)
 
 
 class TelegramNotifier:
-    """Отправка мгновенных карточек лидов в закрытые каналы / чаты менеджеров."""
+    """Отправка карточек лидов с маршрутизацией по направлениям продаж."""
+
+    PROJECT_ICONS = {
+        SalesProject.ANGARS: "🏭 <b>НАПРАВЛЕНИЕ: АНГАРЫ И ЗДАНИЯ</b>",
+        SalesProject.FASADY_KROVLYA: "🏢 <b>НАПРАВЛЕНИЕ: КРОВЛИ И ФАСАДЫ</b>",
+        SalesProject.GAZOBETON: "🧱 <b>НАПРАВЛЕНИЕ: АВТОКЛАВНЫЙ ГАЗОБЕТОН</b>",
+        SalesProject.COMPLEX: "🏗 <b>КОМПЛЕКСНЫЙ ПРОЕКТ</b>",
+        SalesProject.UNCERTAIN: "📋 <b>ОБЩАЯ ЗАЯВКА</b>",
+    }
 
     def __init__(
         self,
@@ -26,21 +34,22 @@ class TelegramNotifier:
         self.mock_mode = mock_mode if mock_mode is not None else (env_mock or not self.bot_token)
 
     def format_lead_card(self, profile: LeadProfile, deal_url: Optional[str] = None) -> str:
-        """Форматирует красивую карточку лида для Telegram."""
+        """Форматирует карточку лида для Telegram с проектом и BANT-параметрами."""
         status_icons = {
-            LeadStatus.HOT: "🔥 <b>ГОРЯЧИЙ ЛИД (BANT 75+)</b>",
+            LeadStatus.HOT: "🔥 <b>ГОРЯЧИЙ ЛИД (75+)</b>",
             LeadStatus.WARM: "⚡️ <b>ТЁПЛЫЙ ЛИД</b>",
             LeadStatus.COLD: "❄️ <b>ХОЛОДНЫЙ ЛИД</b>",
-            LeadStatus.JUNK: "🗑 <b>НЕЦЕЛЕВОЙ ЗАПРОС</b>",
+            LeadStatus.JUNK: "🗑 <b>НЕЦЕЛЕВОЙ</b>",
         }
         status_header = status_icons.get(profile.scoring.status, "📋 <b>НОВЫЙ ЛИД</b>")
+        project_header = self.PROJECT_ICONS.get(profile.project, "📋 <b>НАПРАВЛЕНИЕ НЕ ОПРЕДЕЛЕНО</b>")
 
         phone = profile.phone or "не указан"
         client = profile.client_name or "Контакт не представился"
         company = f" ({profile.company_name})" if profile.company_name else ""
 
         lines = [
-            f"{status_header}",
+            f"{status_header} | {project_header}",
             f"━━━━━━━━━━━━━━━━━━",
             f"👤 <b>Клиент:</b> {client}{company}",
             f"📞 <b>Телефон:</b> <code>{phone}</code>",
@@ -50,10 +59,21 @@ class TelegramNotifier:
 
         lines.extend([
             f"",
-            f"🎯 <b>Потребность (Need):</b> {profile.bant.need or 'Уточняется'}",
-            f"⏱ <b>Сроки (Timeline):</b> {profile.bant.timeline or 'Не указаны'}",
-            f"💰 <b>Бюджет (Budget):</b> {profile.bant.budget or 'Не обсуждался'}",
-            f"👑 <b>Роль (Authority):</b> {profile.bant.authority or 'Представитель'}",
+            f"🎯 <b>Потребность:</b> {profile.bant.need or 'Уточняется'}",
+        ])
+
+        # Специфические технические метрики
+        if profile.specs.area_sqm:
+            lines.append(f"📐 <b>Площадь:</b> {profile.specs.area_sqm:.0f} м²")
+        if profile.specs.volume_cbm:
+            lines.append(f"📦 <b>Объём газобетона:</b> {profile.specs.volume_cbm:.0f} м³ (марка {profile.specs.density or 'D500'})")
+        if profile.specs.cassette_type:
+            lines.append(f"🧩 <b>Тип кассет:</b> {profile.specs.cassette_type}")
+
+        lines.extend([
+            f"⏱ <b>Сроки:</b> {profile.bant.timeline or 'Не указаны'}",
+            f"💰 <b>Бюджет:</b> {profile.bant.budget or 'По расчёту'}",
+            f"👑 <b>ЛПР:</b> {profile.bant.authority or 'Представитель'}",
             f"",
             f"📊 <b>Скоринг:</b> <code>{profile.scoring.score}/100</code>",
             f"💡 <b>Саммари:</b> {profile.summary}",
@@ -61,7 +81,7 @@ class TelegramNotifier:
         ])
 
         if deal_url:
-            lines.extend(["", f"🔗 <a href='{deal_url}'>Открыть сделку в amoCRM</a>"])
+            lines.extend(["", f"🔗 <a href='{deal_url}'>Открыть в CRM (целевая воронка направления)</a>"])
 
         return "\n".join(lines)
 
@@ -70,7 +90,7 @@ class TelegramNotifier:
         text = self.format_lead_card(profile, deal_url)
 
         if self.mock_mode:
-            logger.info("TelegramNotifier [MOCK MODE]: Уведомление сформировано успешно.")
+            logger.info("TelegramNotifier [MOCK MODE]: Алерт направления сформирован успешно.")
             return {"status": "success", "mode": "mock", "formatted_card": text}
 
         url = f"https://api.telegram.org/bot{self.bot_token}/sendMessage"
@@ -85,4 +105,3 @@ class TelegramNotifier:
             resp = await client.post(url, json=payload)
             resp.raise_for_status()
             return {"status": "success", "mode": "live", "telegram_response": resp.json()}
-
