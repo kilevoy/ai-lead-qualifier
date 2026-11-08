@@ -315,9 +315,11 @@
 
       <div class="presets">
         <span class="preset-label">Тестовые проекты:</span>
-        <button class="preset-btn" onclick="sendPreset(1)">🏭 Проект «Ангары» (ЛСТК 1200м²)</button>
-        <button class="preset-btn" onclick="sendPreset(2)">🏢 Проект «Кровли и Фасады» (КФ-1 2400м²)</button>
-        <button class="preset-btn" onclick="sendPreset(3)">🧱 Проект «Газобетон» (D500 180м³)</button>
+        <button class="preset-btn" onclick="sendPreset(1)">🏭 «Ангары» (ЛСТК 1200м²)</button>
+        <button class="preset-btn" onclick="sendPreset(2)">🏢 «Фасады» (КФ-1 2400м²)</button>
+        <button class="preset-btn" onclick="sendPreset(3)">🧱 «Газобетон» (D500 180м³)</button>
+        <button class="preset-btn" style="border-color: #60a5fa; color: #93c5fd;" onclick="sendTechQuestion(1)">💡 Вопрос: «D400 или D500?»</button>
+        <button class="preset-btn" style="border-color: #60a5fa; color: #93c5fd;" onclick="sendTechQuestion(2)">💡 Вопрос: «Вес каркаса 1200м²?»</button>
       </div>
 
       <div class="chat-messages" id="chatBox">
@@ -326,8 +328,21 @@
         </div>
       </div>
 
+      <!-- COPILOT PROMPT BAR (ROADMAP STAGE 2) -->
+      <div id="copilotCard" style="background: #1c2638; border-top: 1px solid #2d3b55; padding: 0.85rem 1.25rem; display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+          <span style="font-size: 0.75rem; color: #60a5fa; font-weight: 600;">💡 AI-СУФЛЁР ДЛЯ МЕНЕДЖЕРА (COPILOT):</span>
+          <button onclick="insertCopilotHint()" style="background: #2563eb; color: #fff; border: none; font-size: 0.72rem; padding: 0.25rem 0.6rem; border-radius: 4px; cursor: pointer;">
+            📋 Вставить в ответ менеджера
+          </button>
+        </div>
+        <div id="copilotHintText" style="font-size: 0.82rem; color: #e2e8f0; line-height: 1.45;">
+          Подсказка появится здесь при техническом вопросе...
+        </div>
+      </div>
+
       <div class="chat-input-bar">
-        <input type="text" id="userInput" class="chat-input" placeholder="Напишите продукцию, объём или объект..." onkeydown="if(event.key==='Enter') sendMessage()">
+        <input type="text" id="userInput" class="chat-input" placeholder="Напишите продукцию, объём или технический вопрос..." onkeydown="if(event.key==='Enter') sendMessage()">
         <button class="send-btn" onclick="sendMessage()">Отправить</button>
       </div>
     </div>
@@ -439,6 +454,22 @@
       status: "COLD"
     };
 
+    let currentCopilotHint = "";
+
+    function sendTechQuestion(num) {
+      if (num === 1) {
+        processUserMsg("Какая разница между блоками D400 и D500 для двухэтажного дома?");
+      } else if (num === 2) {
+        processUserMsg("Какая средняя металлоёмкость на м² у тёплого ангара 1200 кв.м с шагом 6 метров?");
+      }
+    }
+
+    function insertCopilotHint() {
+      const input = document.getElementById("userInput");
+      input.value = currentCopilotHint;
+      input.focus();
+    }
+
     function sendPreset(num) {
       if (num === 1) {
         processUserMsg("Добрый день! Нам нужен быстровозводимый склад из металлокаркаса ЛСТК на 1200 кв.м, высота в коньке 6м. Тёплый контур. Сроки горят, за месяц смонтировать. Бюджет 6.5 млн руб. Я генеральный директор ООО ПромИнвест, Игорь, тел: +7 (919) 343-48-71");
@@ -510,6 +541,21 @@
       if (lower.includes("игорь")) state.contact = "Игорь (ООО ПромИнвест)";
       else if (lower.includes("сергей")) state.contact = "Сергей (Монолит)";
       else if (lower.includes("алексей")) state.contact = "Алексей (Снабжение)";
+
+      // Copilot Hint detection (Smart Assistant Mode)
+      const copilotCard = document.getElementById("copilotCard");
+      const copilotHintText = document.getElementById("copilotHintText");
+      if (lower.includes("d400") || lower.includes("d500") || lower.includes("разниц")) {
+        currentCopilotHint = "«Блок D500 — конструкционно-теплоизоляционный (класс прочности B2.5–B3.5), оптимален для несущих стен до 3 этажей с опиранием плит. D400 на 15% теплее (λ=0.10 Вт/м°С), но требует проверки нагрузок конструктором».";
+        copilotHintText.innerText = currentCopilotHint;
+        copilotCard.style.display = "block";
+      } else if (lower.includes("металлоемкост") || lower.includes("вес")) {
+        currentCopilotHint = "«Для склада 1200 м² (шаг 6м, высота 6м) металлоёмкость составляет 32–36 кг/м² (общий вес металлокаркаса ~40–43 тонны). Проект КМ выполняем бесплатно при заказе комплекта».";
+        copilotHintText.innerText = currentCopilotHint;
+        copilotCard.style.display = "block";
+      } else {
+        copilotCard.style.display = "none";
+      }
 
       // Score
       let score = 25;
