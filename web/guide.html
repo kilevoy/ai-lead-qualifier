@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Инструкция: AI Lead Qualifier & Pipeline Router (ai-lead-qualifier)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card-bg: #111827;
+      --card-border: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #6366f1;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Bar */
+    .top-nav {
+      background: rgba(17, 24, 39, 0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .brand-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-main);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .nav-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #4f46e5;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: background 0.15s;
+    }
+    .btn-back:hover { background: #4338ca; }
+    .btn-portfolio {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      padding: 6px 10px;
+    }
+    .btn-portfolio:hover { color: #fff; }
+
+    /* Layout */
+    .content-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 36px 20px 60px;
+      flex: 1;
+      width: 100%;
+    }
+
+    /* Hero header */
+    .hero {
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 26px;
+      margin-bottom: 32px;
+    }
+    .tag {
+      display: inline-block;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(99, 102, 241, 0.15);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      margin-bottom: 12px;
+    }
+    .hero h1 {
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1.25;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+    .hero p {
+      font-size: 16px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Section Cards */
+    .section-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 28px;
+      margin-bottom: 26px;
+    }
+    .section-card h2 {
+      font-size: 20px;
+      color: #818cf8;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-card p, .section-card li {
+      font-size: 15px;
+      color: #cbd5e1;
+      line-height: 1.65;
+    }
+    .section-card ul {
+      margin: 12px 0;
+      padding-left: 22px;
+    }
+    .section-card li { margin-bottom: 8px; }
+
+    /* Comparison Box */
+    .vs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 18px 0;
+    }
+    @media (max-width: 720px) {
+      .vs-grid { grid-template-columns: 1fr; }
+    }
+    .vs-box {
+      border-radius: 10px;
+      padding: 16px 18px;
+      font-size: 14px;
+    }
+    .vs-bad {
+      background: rgba(239, 68, 68, 0.07);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+    .vs-bad strong { color: #f87171; display: block; margin-bottom: 6px; font-size: 15px; }
+    .vs-good {
+      background: rgba(16, 185, 129, 0.07);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+    .vs-good strong { color: #34d399; display: block; margin-bottom: 6px; font-size: 15px; }
+
+    /* BANT Grid */
+    .bant-explain-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 18px;
+    }
+    @media (max-width: 720px) {
+      .bant-explain-grid { grid-template-columns: 1fr; }
+    }
+    .bant-box {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 18px;
+    }
+    .bant-box .bant-letter {
+      display: inline-block;
+      width: 26px;
+      height: 26px;
+      background: #4f46e5;
+      color: #fff;
+      font-weight: 800;
+      text-align: center;
+      line-height: 26px;
+      border-radius: 6px;
+      margin-right: 6px;
+    }
+    .bant-box strong {
+      color: #fde68a;
+      font-size: 15px;
+    }
+    .bant-box p {
+      font-size: 13.5px;
+      color: #94a3b8;
+      margin-top: 6px;
+    }
+
+    /* Pipeline Diagram */
+    .flow-diagram {
+      background: #090e17;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 18px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      color: #cbd5e1;
+      overflow-x: auto;
+    }
+    .flow-step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .flow-step:last-child { margin-bottom: 0; }
+    .flow-badge {
+      background: #1e293b;
+      color: #a5b4fc;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      min-width: 140px;
+      text-align: center;
+    }
+    .flow-arrow { color: #f59e0b; font-weight: bold; }
+
+    /* Steps box */
+    .step-list {
+      counter-reset: guide-step;
+      list-style: none;
+      padding: 0;
+      margin: 16px 0;
+    }
+    .step-list li {
+      counter-increment: guide-step;
+      position: relative;
+      padding-left: 42px;
+      margin-bottom: 16px;
+    }
+    .step-list li::before {
+      content: counter(guide-step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 28px;
+      height: 28px;
+      background: #4f46e5;
+      color: #fff;
+      font-weight: 700;
+      font-size: 13px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bottom-cta {
+      text-align: center;
+      margin-top: 36px;
+      padding: 24px;
+      background: #111827;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+    }
+    .bottom-cta p {
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      font-size: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <a href="index.html" class="brand-link">
+      <div class="brand-icon">⚡</div>
+      <span>AI Lead Qualifier & Router</span>
+    </a>
+    <div class="nav-actions">
+      <a href="https://kilevoy.github.io/" class="btn-portfolio">← Портфолио</a>
+      <a href="index.html" class="btn-back">← К интерактивному стенду</a>
+    </div>
+  </nav>
+
+  <!-- Content Container -->
+  <main class="content-wrap">
+
+    <header class="hero">
+      <span class="tag">Регламент квалификации и скоринга</span>
+      <h1>Для чего нужен AI Lead Qualifier и как он работает физически</h1>
+      <p>
+        Практическое руководство для коммерческого директора и руководителей отделов продаж: как перестать тратить время менеджеров на нецелевые лиды и направить фокус на сделки с максимальной маржой.
+      </p>
+    </header>
+
+    <!-- SECTION 1 -->
+    <section class="section-card">
+      <h2>1. Какую бизнес-проблему решает сервис?</h2>
+      <p>
+        В промышленном B2B один час работы опытного инженера-сметчика или ведущего менеджера по продажам стоит дорого. Однако до 60% входящих обращений на сайте или в мессенджерах оказываются:
+      </p>
+      <ul>
+        <li>Частными лицами с розничным объемом («нужно 3 листа профнастила на забор на дачу»).</li>
+        <li>Студентами, ищущими материалы для диплома, или маркетинговыми агентствами.</li>
+        <li>Запросами без бюджета и четких сроков («прицените на будущее, строить планируем через 3 года»).</li>
+      </ul>
+
+      <div class="vs-grid">
+        <div class="vs-bad">
+          <strong>❌ Без AI-квалификации:</strong>
+          Менеджер тратит 40 минут на телефонные расспросы и расчет сметы для неплатежеспособного заказчика. В это же время входящая заявка от генерального подрядчика на заводской ангар за 24 млн ₽ лежит без ответа 2 часа.
+        </div>
+        <div class="vs-good">
+          <strong>✅ С AI-квалификацией:</strong>
+          Интеллектуальный робот проводит первичный BANT-диалог за 3–4 вопроса, мгновенно вычисляет балл готовности (0–100), отсекает нецелевые запросы и немедленно передает «горячего» клиента ведущему менеджеру.
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2 -->
+    <section class="section-card">
+      <h2>2. Методология BANT: как сервис оценивает клиента</h2>
+      <p>
+        Сервис использует общепринятый мировой стандарт квалификации B2B-сделок, адаптированный под специфику строительного холдинга:
+      </p>
+
+      <div class="bant-explain-grid">
+        <div class="bant-box">
+          <span class="bant-letter">B</span><strong>Budget (Бюджет)</strong>
+          <p>Есть ли у клиента подтвержденное финансирование (собственные средства, лизинг, проектное финансирование банка) или проект пока на стадии идеи.</p>
+        </div>
+        <div class="bant-box">
+          <span class="bant-letter">A</span><strong>Authority (Полномочия ЛПР)</strong>
+          <p>С кем ведется диалог: собственник предприятия, генеральный директор, начальник ОМТС или прораб без права подписи договора.</p>
+        </div>
+        <div class="bant-box">
+          <span class="bant-letter">N</span><strong>Need (Потребность и объект)</strong>
+          <p>Какой конкретно объект возводится (складской комплекс, производственный цех, реконструкция кровли), известны ли точные габариты и нагрузки.</p>
+        </div>
+        <div class="bant-box">
+          <span class="bant-letter">T</span><strong>Timeline (Сроки поставки)</strong>
+          <p>Сроки монтажа: запуск объекта в текущем квартале (горящий срок) либо предварительный интерес без графика реализации.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3 -->
+    <section class="section-card">
+      <h2>3. Физическая доставка данных в отдел продаж</h2>
+      <p>После прохождения диалога система принимает одно из трех решений:</p>
+      <ul>
+        <li>
+          <strong>🔥 Горячий лид (Score &ge; 75):</strong>
+          Мгновенно отправляет Telegram-алерт руководителю направления с прямым телефоном клиента («Звонок в 1 касание»). В amoCRM автоматически создается сделка в статусе «Срочный расчет» с закреплением ответственного менеджера.
+        </li>
+        <li>
+          <strong>⚡ Теплый лид (Score 50–74):</strong>
+          Создается плановая задача менеджеру на квалификационный звонок в течение 2 часов.
+        </li>
+        <li>
+          <strong>❄️ Нецелевой или розничный запрос (Score &lt; 50):</strong>
+          Клиенту выдается ссылка на розничный прайс или каталог дилеров. Время менеджеров холдинга не расходуется.
+        </li>
+      </ul>
+
+      <div class="flow-diagram">
+        <div class="flow-step">
+          <span class="flow-badge">Входящий лид</span>
+          <span class="flow-arrow">──► BANT-диалог ──►</span>
+          <span class="flow-badge" style="background:#4f46e5;color:#fff;">Скоринг 0-100</span>
+          <span class="flow-arrow">──► Разделение ──►</span>
+          <span class="flow-badge" style="background:#10b981;color:#fff;">Telegram + amoCRM</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4 -->
+    <section class="section-card">
+      <h2>4. Как протестировать стенд прямо сейчас?</h2>
+      <ol class="step-list">
+        <li>
+          <strong>Выберите один из готовых сценариев вверху:</strong>
+          <ul>
+            <li><em>«🏭 Пром-склад 1400 м²»:</em> пример крупного целевого заказчика с подтвержденным бюджетом (Score 92/100).</li>
+            <li><em>«🏢 Реконструкция цеха»:</em> теплый клиент на фасадные системы с формирующимся бюджетом (Score 68/100).</li>
+            <li><em>«🏠 Частный гараж»:</em> нецелевой розничный лид (Score 25/100, автоотказ).</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Оцените правый блок аналитики:</strong> посмотрите, как автоматически заполнилась карточка BANT, какой рассчитан балл и как выглядит создаваемая сделка для amoCRM.
+        </li>
+        <li>
+          <strong>Посмотрите предпросмотр Telegram-уведомления:</strong> внизу экрана показано сообщение, которое за 1 секунду прилетает на телефон дежурного менеджера.
+        </li>
+        <li>
+          <strong>Попробуйте живой диалог:</strong> напишите произвольное сообщение в поле ввода диалога слева и посмотрите на реакцию AI.
+        </li>
+      </ol>
+    </section>
+
+    <div class="bottom-cta">
+      <p>Готовы посмотреть диалоговый квалификатор в действии?</p>
+      <a href="index.html" class="btn-back" style="font-size:15px;padding:10px 22px;">⚡ Перейти к демо-стенду квалификатора</a>
+    </div>
+
+  </main>
+
+</body>
+</html>
