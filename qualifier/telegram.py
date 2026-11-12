@@ -1,6 +1,7 @@
 """Telegram notification builder with project direction tagging."""
 
 import os
+import html
 import logging
 from typing import Dict, Any, Optional
 import httpx
@@ -44,9 +45,10 @@ class TelegramNotifier:
         status_header = status_icons.get(profile.scoring.status, "📋 <b>НОВЫЙ ЛИД</b>")
         project_header = self.PROJECT_ICONS.get(profile.project, "📋 <b>НАПРАВЛЕНИЕ НЕ ОПРЕДЕЛЕНО</b>")
 
-        phone = profile.phone or "не указан"
-        client = profile.client_name or "Контакт не представился"
-        company = f" ({profile.company_name})" if profile.company_name else ""
+        e = lambda v: html.escape(str(v))  # данные клиента — недоверенный ввод, а Telegram разбирает HTML
+        phone = e(profile.phone or "не указан")
+        client = e(profile.client_name or "Контакт не представился")
+        company = f" ({e(profile.company_name)})" if profile.company_name else ""
 
         lines = [
             f"{status_header} | {project_header}",
@@ -55,11 +57,11 @@ class TelegramNotifier:
             f"📞 <b>Телефон:</b> <code>{phone}</code>",
         ]
         if profile.email:
-            lines.append(f"✉️ <b>Email:</b> <code>{profile.email}</code>")
+            lines.append(f"✉️ <b>Email:</b> <code>{e(profile.email)}</code>")
 
         lines.extend([
             f"",
-            f"🎯 <b>Потребность:</b> {profile.bant.need or 'Уточняется'}",
+            f"🎯 <b>Потребность:</b> {e(profile.bant.need or 'Уточняется')}",
         ])
 
         # Специфические технические метрики
@@ -68,16 +70,16 @@ class TelegramNotifier:
         if profile.specs.volume_cbm:
             lines.append(f"📦 <b>Объём газобетона:</b> {profile.specs.volume_cbm:.0f} м³ (марка {profile.specs.density or 'D500'})")
         if profile.specs.cassette_type:
-            lines.append(f"🧩 <b>Тип кассет:</b> {profile.specs.cassette_type}")
+            lines.append(f"🧩 <b>Тип кассет:</b> {e(profile.specs.cassette_type)}")
 
         lines.extend([
-            f"⏱ <b>Сроки:</b> {profile.bant.timeline or 'Не указаны'}",
-            f"💰 <b>Бюджет:</b> {profile.bant.budget or 'По расчёту'}",
-            f"👑 <b>ЛПР:</b> {profile.bant.authority or 'Представитель'}",
+            f"⏱ <b>Сроки:</b> {e(profile.bant.timeline or 'Не указаны')}",
+            f"💰 <b>Бюджет:</b> {e(profile.bant.budget or 'По расчёту')}",
+            f"👑 <b>ЛПР:</b> {e(profile.bant.authority or 'Представитель')}",
             f"",
             f"📊 <b>Скоринг:</b> <code>{profile.scoring.score}/100</code>",
-            f"💡 <b>Саммари:</b> {profile.summary}",
-            f"👉 <b>Следующий шаг:</b> {profile.next_step}",
+            f"💡 <b>Саммари:</b> {e(profile.summary)}",
+            f"👉 <b>Следующий шаг:</b> {e(profile.next_step)}",
         ])
 
         if deal_url:

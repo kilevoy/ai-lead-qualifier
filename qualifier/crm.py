@@ -1,6 +1,7 @@
 """CRM integration client with pipeline routing by project direction."""
 
 import os
+import time
 import logging
 from typing import Dict, Any, Optional
 import httpx
@@ -109,7 +110,7 @@ class AmoCRMClient:
                 {
                     "task_type_id": 1,
                     "text": f"🔥 {profile.next_step} (Сделка: {deal_name})",
-                    "complete_till": 900,  # 15 минут
+                    "complete_till": int(time.time()) + 900,  # через 15 минут (unix-timestamp)
                     "entity_id": deal_id,
                     "entity_type": "leads",
                 }

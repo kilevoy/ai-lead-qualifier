@@ -4,7 +4,7 @@ import os
 import uuid
 from typing import Dict, Any, Optional
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMouter, CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -22,7 +22,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,  # демо без cookie-сессий; с credentials нельзя использовать "*"
     allow_methods=["*"],
     allow_headers=["*"],
 )
